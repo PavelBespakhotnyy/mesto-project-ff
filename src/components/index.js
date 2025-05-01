@@ -1,7 +1,14 @@
 import '../pages/index.css';
 import { initialCards } from './cards.js';
-import { createCard, removeCard, handleLikeButton} from './card.js';
-import { openPopup, openProfilePopup, closePopup } from './modal.js';
+import { createCard, removeCard} from './card.js';
+import { openPopup, closePopup } from './modal.js';
+
+const editPopup = document.querySelector('.popup_type_edit');
+const currentNameProfile = document.querySelector('.profile__title');
+const currentJobProfile = document.querySelector('.profile__description');
+const nameInputProfile = document.querySelector('.popup__input_type_name');
+const jobInputProfile = document.querySelector('.popup__input_type_description');
+
 
 // Переменные для попапа добавления карточки
 const addButton = document.querySelector('.profile__add-button');
@@ -15,13 +22,50 @@ const viewCardImagePopup = document.querySelector('.popup_type_image');
 const viewCardImage = viewCardImagePopup.querySelector('.popup__image');
 const viewCardCaption = viewCardImagePopup.querySelector('.popup__caption');
 
+// Переменные для popup добавления карточки
+const cardNameInputProfile = newCardPopup.querySelector('.popup__input_type_card-name');
+const cardLinkInput = newCardPopup.querySelector('.popup__input_type_url');
+
 // @todo: DOM узлы
 const placesList = document.querySelector('.places__list');
 
 // @todo: Вывести карточки на страницу
 initialCards.forEach(item => {
-	const cardElement = createCard(item, removeCard);
+	const cardElement = createCard(item, removeCard, handleCardClick);
 	placesList.append(cardElement);
+});
+
+// Функция открыия профиля
+function openProfilePopup() {
+  nameInputProfile.value = currentNameProfile.textContent;
+  jobInputProfile.value = currentJobProfile.textContent;
+  editPopup.classList.add('popup_is-animated');
+  openPopup(editPopup);
+}
+
+// Изменение профиля
+editPopup.querySelector('.popup__form').addEventListener('submit', (evt) => {
+  evt.preventDefault();
+  currentNameProfile.textContent = nameInputProfile.value;
+  currentJobProfile.textContent = jobInputProfile.value;
+  closePopup(editPopup);
+});
+
+// Переделать? ---------------------
+// Закрытие popup по клику на оверлей
+document.querySelectorAll('.popup').forEach(popup => {
+  popup.addEventListener('click', (evt) => {
+    if (evt.target === popup) {
+      closePopup(popup);
+    }
+  });
+});
+
+// Переделать ----------------------
+// Кнопка закрытия popup
+document.querySelectorAll('.popup__close').forEach(button => {
+  const popup = button.closest('.popup');
+  button.addEventListener('click', () => closePopup(popup));
 });
 
 // ------ Добавление слушателей событий -------
@@ -29,35 +73,26 @@ initialCards.forEach(item => {
 editButton.addEventListener('click', openProfilePopup);
 // Добавление карточки
 addButton.addEventListener('click', () => openPopup(newCardPopup));
+
 // Просмотр изображения
-placesList.addEventListener('click', (evt) => {
-  if (evt.target.classList.contains('card__image')) {
-    viewCardImage.src = evt.target.src;
-    viewCardImage.alt = evt.target.alt;
-    viewCardCaption.textContent = evt.target.closest('.card').querySelector('.card__title').textContent;
-    openPopup(viewCardImagePopup);
-  }
-});
+export function handleCardClick(link, name) {
+  viewCardImage.src = link;
+  viewCardImage.alt = name;
+  viewCardCaption.textContent = name;
+  openPopup(viewCardImagePopup);
+}
 
 // Добавление новой карточки listener
 newCardPopup.querySelector('.popup__form').addEventListener('submit', (evt) => {
   evt.preventDefault();
-  const nameInput = newCardPopup.querySelector('.popup__input_type_card-name');
-  const linkInput = newCardPopup.querySelector('.popup__input_type_url');
   const newCard = {
-    name: nameInput.value,
-    link: linkInput.value
+    name: cardNameInputProfile.value,
+    link: cardLinkInput.value
   };
-  const cardElement = createCard(newCard, removeCard);
+  const cardElement = createCard(newCard, removeCard, handleCardClick);
   placesList.prepend(cardElement);
-  nameInput.value = '';
-  linkInput.value = '';
+  cardNameInputProfile.value = '';
+  cardLinkInput.value = '';
   closePopup(newCardPopup);
 });
 
-// Listener лайка карточки
-placesList.addEventListener('click', (evt) => {
-  if (evt.target.classList.contains('card__like-button')) {
-    handleLikeButton(evt.target, 'card__like-button_is-active');
-  }
-});
