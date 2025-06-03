@@ -1,5 +1,5 @@
 import '../pages/index.css';
-import { createCard } from './card.js';
+import { createCard, handleLike, handleDeleteCard } from './card.js';
 import { openPopup, closePopup } from './modal.js';
 import { enableValidation, clearValidation } from './validation.js';
 import { 
@@ -102,7 +102,7 @@ elements.newCardPopup.querySelector('.popup__form').addEventListener('submit', e
 
   createCardApi(newCardData)
     .then(cardData => {
-      elements.placesList.prepend(createCard(cardData, handleCardClick, userId));
+      elements.placesList.prepend(createCard(cardData, handleCardClick, userId, handleLike, handleDeleteCard));
       evt.target.reset();
       closePopup(elements.newCardPopup);
     })
@@ -140,7 +140,7 @@ Promise.all([getUserInfo(), getCards()])
     elements.profileJob.textContent = userData.about;
     updateAvatarDisplay(userData.avatar);
     cards.forEach(cardData => {
-      elements.placesList.append(createCard(cardData, handleCardClick, userId));
+      elements.placesList.append(createCard(cardData, handleCardClick, userId, handleLike, handleDeleteCard));
     });
   })
   .catch(err => console.error('Ошибка загрузки данных:', err));

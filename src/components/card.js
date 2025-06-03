@@ -7,7 +7,7 @@ const cardTemplate = document.querySelector('#card-template').content;
 let cardToDelete = null;
 
 // Обработка удаления карточки
-const handleDeleteCard = cardElement => {
+export const handleDeleteCard = cardElement => {
   cardToDelete = cardElement;
   openPopup(deleteConfirmPopup);
 };
@@ -24,7 +24,7 @@ deleteConfirmForm.addEventListener('submit', evt => {
 });
 
 // Обработка лайков
-const handleLike = (cardId, likeButton, likeCounter) => {
+export const handleLike = (cardId, likeButton, likeCounter) => {
   const isLiked = likeButton.classList.contains('card__like-button_is-active');
   (isLiked ? removeLike : addLike)(cardId)
     .then(card => {
@@ -35,7 +35,7 @@ const handleLike = (cardId, likeButton, likeCounter) => {
 };
 
 // Создание карточки
-export const createCard = function(cardData, handleClickOnImage, userId) {
+export const createCard = function(cardData, handleClickOnImage, userId, handleLikeCallback, handleDeleteCallback) {
   const cardElement = cardTemplate.querySelector('.card').cloneNode(true);
   const cardImage = cardElement.querySelector('.card__image');
   const cardTitle = cardElement.querySelector('.card__title');
@@ -65,12 +65,12 @@ export const createCard = function(cardData, handleClickOnImage, userId) {
   }
 
   likeButton.addEventListener('click', function() {
-    handleLike(cardData._id, likeButton, likeCounter);
+    handleLikeCallback(cardData._id, likeButton, likeCounter);
   });
 
   if (!cardData.owner || cardData.owner._id === userId) {
     deleteButton.addEventListener('click', function() {
-      handleDeleteCard(cardElement);
+      handleDeleteCallback(cardElement);
     });
   } else {
     deleteButton.remove();
