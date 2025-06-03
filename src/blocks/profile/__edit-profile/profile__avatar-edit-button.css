@@ -1,0 +1,41 @@
+.profile__image-edit-button {
+    background: transparent url('../../../images/edit-icon.svg') center no-repeat;
+    background-size: 26px 26px;
+    border: none;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+    cursor: pointer;
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.profile__image-edit-button:hover {
+    opacity: 1;
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+.profile__image-container {
+    position: relative;
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    overflow: hidden;
+    margin: 0 30px 0 0;
+}
+
+.popup__button:hover {
+    opacity: 0.8;
+}
+
+@media screen and (max-width: 568px) {
+    .popup__button {
+        font-size: 14px;
+        line-height: 17px;
+        height: 46px;
+    }
+}
